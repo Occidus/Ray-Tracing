@@ -37,8 +37,8 @@ int main() {
 	hitable *list[4];
 	list[0] = new sphere(Vec3f(0,0,-1), 0.5, new lambertian(Vec3f(0.8, 0.3, 0.3)));
 	list[1] = new sphere(Vec3f(0,-100.5,-1), 100, new lambertian(Vec3f(0.8, 0.8, 0.0)));
-	list[2] = new sphere(Vec3f(1,0,-1), 0.5, new metal(Vec3f(0.8, 0.6, 0.2)));
-	list[3] = new sphere(Vec3f(-1,0,-1), 0.5, new metal(Vec3f(0.8, 0.8, 0.8)));
+	list[2] = new sphere(Vec3f(1,0,-1), 0.5, new metal(Vec3f(0.8, 0.6, 0.2), 1.0));
+	list[3] = new sphere(Vec3f(-1,0,-1), 0.5, new metal(Vec3f(0.8, 0.8, 0.8), 0.3));
 	hitable *world = new hitable_list(list,4);
 	camera cam;
 	for (int j = ny-1; j>= 0; j--){
