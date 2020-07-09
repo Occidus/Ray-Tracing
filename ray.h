@@ -1,3 +1,4 @@
+
 #ifndef RAYH
 #define RAYH
 #include "linear.h"
