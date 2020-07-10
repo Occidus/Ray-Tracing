@@ -1,11 +1,6 @@
 #ifndef LAMBERTIANH
 #define LAMBERTIANH
 
-#include "material.h"
-#include "ray.h"
-
-using namespace r3;
-
 class lambertian : public material {
 public:
   lambertian(const Vec3f &a) : albedo(a) {}

@@ -1,5 +1,4 @@
 #include <iostream>
-#include "linear.h"
 #include "sphere.h"
 #include "torus.h"
 #include "hitable_list.h"
@@ -8,6 +7,7 @@
 #include "material.h"
 #include "lambertian.h"
 #include "metal.h"
+#include "dielectric.h"
 
 using namespace r3;
 
@@ -35,20 +35,20 @@ int main() {
 	int ny = 300;
 	int ns = 100;
 	std::cout << "P3\n" << nx << " " << ny << "\n255\n";
-	hitable *list[6];
-	list[0] = new sphere(Vec3f(0,-0.25,-1), 0.25, new lambertian(Vec3f(0.8, 0.3, 0.3)));
+	hitable *list[7];
+	list[0] = new sphere(Vec3f(0,-0.25,-1), 0.25, new lambertian(Vec3f(0.1, 0.2, 0.5)));
 	list[1] = new sphere(Vec3f(0,-100.5,-1), 100, new lambertian(Vec3f(0.8, 0.8, 0.0)));
-	list[2] = new sphere(Vec3f(0.55,-0.25,-1), 0.25, new metal(Vec3f(0.8, 0.6, 0.2), 1.0));
-	list[3] = new sphere(Vec3f(-0.55,-0.25,-1), 0.25, new metal(Vec3f(0.8, 0.8, 0.8), 0.3));
-	list[4] = new torus(Vec3f(1.2, -0.4,-1), 0.15, 0.1, new metal(Vec3f(0.2, 0.6, 0.9), 1.0));
-	list[5] = new torus(Vec3f(-1.3,-0.2,-1), 0.15, 0.1, new lambertian(Vec3f(0.3, 0.7, 0.2)));
-	hitable *world = new hitable_list(list,6);
-	camera cam;
+	list[2] = new sphere(Vec3f(-0.55,-0.25,-1), 0.25, new dielectric(1.5));
+	list[3] = new sphere(Vec3f(-0.55,-0.25,-1), -0.2, new dielectric(1.5));
+	list[4] = new sphere(Vec3f(0.55,-0.25,-1), 0.25, new metal(Vec3f(0.8, 0.6, 0.2), 0.1));
+	list[5] = new torus(Vec3f(-1.2, -0.4,-1), 0.15, 0.1, new metal(Vec3f(0.2, 0.6, 0.9), 0.1));
+	list[6] = new torus(Vec3f(1.2,-0.4,-1), 0.15, 0.1, new dielectric(1.01));
+	hitable *world = new hitable_list(list,7);
+	camera cam(Vec3f(-1.5,2,1), Vec3f(-0.5,0,-0.7), Vec3f(-0.3,1,0), 25, float(nx)/float(ny));
 	for (int j = ny-1; j>= 0; j--){
 		for (int i = 0; i< nx; i++){
-			bool trace = true;
 			Vec3f col = Vec3f(0, 0, 0);
-			for (int s=0; trace && s < ns; s++) {
+			for (int s=0;s < ns; s++) {
 				float u = float(i + drand48()) / float(nx);
 				float v = float(j + drand48()) / float(ny);
 				ray r = cam.get_ray(u, v);

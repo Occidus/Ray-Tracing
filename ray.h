@@ -1,6 +1,6 @@
-
 #ifndef RAYH
 #define RAYH
+
 #include "linear.h"
 
 using namespace r3;

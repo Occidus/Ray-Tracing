@@ -20,7 +20,8 @@ public:
 };
 
 bool torus::hit(const ray &ra, float t_min, float t_max,
-                hit_record &rec) const {
+                hit_record &rec)
+    const { //! Does not support rotation or internal reflections
   bool out = false;
   // Matrix4f objFromWorld = obj.modelPose.GetMatrix4().Inverted();
   Vec3f p0 = ra.origin() - center;
