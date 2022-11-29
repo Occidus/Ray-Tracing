@@ -32,12 +32,12 @@ public:
     Vec3f refracted;
     float reflect_prob;
     float cosine;
-    if (Dot(r_in.direction(), rec.normal) > 0) {
+    if (Dot(r_in.direction(), rec.normal) > 0) { // internal reflection
       outward_normal = -rec.normal;
       ni_over_nt = ref_idx;
       cosine = ref_idx * Dot(r_in.direction(), rec.normal) /
                r_in.direction().Length();
-    } else {
+    } else { // reflection
       outward_normal = rec.normal;
       ni_over_nt = 1.0 / ref_idx;
       cosine = -Dot(r_in.direction(), rec.normal) / r_in.direction().Length();
@@ -45,7 +45,7 @@ public:
     if (refract(r_in.direction(), outward_normal, ni_over_nt, refracted)) {
       reflect_prob = schlick(cosine, ref_idx);
     } else {
-      scattered = ray(rec.p, reflected);
+      //scattered = ray(rec.p, reflected);
       reflect_prob = 1.0;
     }
     if (drand48() < reflect_prob) {

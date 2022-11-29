@@ -30,7 +30,7 @@ public:
     vertical = 2 * half_height * focus_dist * v;
   }
   ray get_ray(float s, float t) {
-    Vec3f rd = lens_radius * random_in_unit_disk();
+    Vec3f rd = lens_radius * random_in_unit_disk(); // ray direction
     Vec3f offset = u * rd.x + v * rd.y;
     return ray(origin + offset, lower_left_corner + s * horizontal +
                                     t * vertical - origin - offset);

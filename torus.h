@@ -9,13 +9,22 @@ using namespace r3;
 class torus : public hitable {
 public:
   torus() {}
-  torus(Vec3f cen, float br, float lr, material *m)
-      : center(cen), bigr(br), litr(lr), mat(m){};
+  torus(Vec3f cen, float br, float lr, material *m) : center(cen), bigr(br), mat(m){
+    if (lr < 0) {
+      litr = -lr;
+      inverseNorm = true;
+    }
+    else {
+      litr = lr;
+      inverseNorm = false;
+    }
+  };
   virtual bool hit(const ray &ra, float tmin, float tmax,
                    hit_record &rec) const;
   Vec3f center;
   float bigr;
   float litr;
+  bool inverseNorm;
   material *mat;
 };
 
@@ -31,6 +40,7 @@ bool torus::hit(const ray &ra, float t_min, float t_max,
   double g = Dot(l, l);
   double h = 2 * Dot(l, p0);
   double k = Dot(p0, p0) + (R * R) - (r * r);
+
   // Coefficients
   double a = g * g;
   double b = 2 * g * h;
@@ -72,9 +82,8 @@ bool torus::hit(const ray &ra, float t_min, float t_max,
   R = b3 + 8 * d * a2 - 4 * a * b * c;
   double delta0 = c2 - 3.0 * b * d + 12.0 * a * e;
   double delta1 = 2.0 * c3 - 9.0 * b * c * d + 27.0 * b2 * e + 27.0 * a * d2 -
-                  72.0 * a * c * e;
-  double D =
-      64 * a3 * e - 16 * a2 * c2 + 16 * a * b2 * c - 16 * a2 * b * d - 3 * b4;
+  72.0 * a * c * e;
+  double D = 64 * a3 * e - 16 * a2 * c2 + 16 * a * b2 * c - 16 * a2 * b * d - 3 * b4;
   p = (P / (8 * a2));
   double q = (R / (8 * a3));
   double y = (delta1 * delta1 - 4 * delta0 * delta0 * delta0);
@@ -159,14 +168,18 @@ bool torus::hit(const ray &ra, float t_min, float t_max,
   }
 
   if (out) {
-    rec.t = z;
-    rec.p = p0 + l * z;
+    rec.t = (p0+l*z).Length();
+    //rec.p = p0 + l * z;
+    rec.p = ra.point_at_parameter(rec.t);
     float u = atan2(rec.p.z, rec.p.x); // Radians
     rec.normal = Quaternionf(Vec3f(0, 1, 0), u) * rec.p;
     rec.normal.x -= bigr;
     float v = atan2(rec.normal.y, rec.normal.x); // Radians
     rec.normal = (Quaternionf(Vec3f(0, 1, 0), -u) * rec.normal).Normalized();
+    if (inverseNorm) { rec.normal = -rec.normal; }
+    fprintf(stderr, "Before rec.p: %.3lf\t%.3lf\t%.3lf\n", rec.p.x, rec.p.y, rec.p.z);
     rec.p = rec.p + center;
+    fprintf(stderr, "After  rec.p: %.3lf\t%.3lf\t%.3lf\n", rec.p.x, rec.p.y, rec.p.z);
     rec.mat_ptr = mat;
   }
 
